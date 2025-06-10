@@ -4,10 +4,6 @@ import pandas as pd
 import os
 from openai import OpenAI
 import json
-from dotenv import load_dotenv
-
-# Load environment variables from .env file
-load_dotenv()
 
 # Initialize Flask app with dotenv disabled
 app = Flask(__name__, static_url_path='')
@@ -18,8 +14,14 @@ CORS(app)  # Enable CORS for all routes
 # Define skin types
 skin_cols = ['Dry', 'Normal', 'Oily']
 
-# Initialize OpenAI client with API key from environment variable
-client = OpenAI(api_key=os.getenv('OPENAI_API_KEY'))
+# Initialize OpenAI client with direct API key
+try:
+    OPENAI_API_KEY = "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"  # Replace with your actual API key
+    client = OpenAI(api_key=OPENAI_API_KEY)
+    print("OpenAI client initialized successfully!")
+except Exception as e:
+    print(f"Error initializing OpenAI client: {str(e)}")
+    raise
 
 # Load and clean the dataset
 try:
@@ -256,85 +258,85 @@ def index():
             html_content = file.read()
             
         # Add chatbot widget HTML and JavaScript
-        chatbot_html = """
-        <div id="chatbot-widget" style="position: fixed; bottom: 20px; right: 20px; z-index: 1000;">
-            <div id="chatbot-header" style="background: #4a90e2; color: white; padding: 10px; cursor: pointer; border-radius: 5px 5px 0 0;">
-                Chat with Noor
-            </div>
-            <div id="chatbot-body" style="display: none; background: white; border: 1px solid #ccc; height: 400px; width: 300px; border-radius: 0 0 5px 5px;">
-                <div id="chat-messages" style="height: 320px; overflow-y: auto; padding: 10px;"></div>
-                <div style="padding: 10px; border-top: 1px solid #ccc;">
-                    <input type="text" id="chat-input" style="width: 80%; padding: 5px;" placeholder="Type your message...">
-                    <button onclick="sendMessage()" style="width: 18%; padding: 5px;">Send</button>
-                </div>
-            </div>
-        </div>
-
-        <script>
-            document.getElementById('chatbot-header').addEventListener('click', function() {
-                const body = document.getElementById('chatbot-body');
-                body.style.display = body.style.display === 'none' ? 'block' : 'none';
-            });
-
-            function sendMessage() {
-                const input = document.getElementById('chat-input');
-                const message = input.value.trim();
-                if (!message) return;
-
-                // Add user message to chat
-                addMessage('You: ' + message, 'user');
-                input.value = '';
-
-                // Send to backend
-                fetch('/chat', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({ message: message })
-                })
-                .then(response => response.json())
-                .then(data => {
-                    addMessage('Noor: ' + data.response, 'bot');
-                })
-                .catch(error => {
-                    addMessage('Error: Could not get response', 'error');
-                });
-            }
-
-            function addMessage(message, type) {
-                const messagesDiv = document.getElementById('chat-messages');
-                const messageElement = document.createElement('div');
-                messageElement.style.marginBottom = '10px';
-                messageElement.style.padding = '5px';
-                messageElement.style.borderRadius = '5px';
-                
-                if (type === 'user') {
-                    messageElement.style.backgroundColor = '#e3f2fd';
-                    messageElement.style.marginLeft = '20%';
-                } else if (type === 'bot') {
-                    messageElement.style.backgroundColor = '#f5f5f5';
-                    messageElement.style.marginRight = '20%';
-                } else {
-                    messageElement.style.backgroundColor = '#ffebee';
-                }
-                
-                messageElement.textContent = message;
-                messagesDiv.appendChild(messageElement);
-                messagesDiv.scrollTop = messagesDiv.scrollHeight;
-            }
-
-            // Add enter key support
-            document.getElementById('chat-input').addEventListener('keypress', function(e) {
-                if (e.key === 'Enter') {
-                    sendMessage();
-                }
-            });
-        </script>
-        """
-        
-        # Insert chatbot HTML before the closing body tag
-        html_content = html_content.replace('</body>', chatbot_html + '</body>')
+        # chatbot_html = """
+        # <div id="chatbot-widget" style="position: fixed; bottom: 20px; right: 20px; z-index: 1000;">
+        #     <div id="chatbot-header" style="background: #4a90e2; color: white; padding: 10px; cursor: pointer; border-radius: 5px 5px 0 0;">
+        #         Chat with Noor
+        #     </div>
+        #     <div id="chatbot-body" style="display: none; background: white; border: 1px solid #ccc; height: 400px; width: 300px; border-radius: 0 0 5px 5px;">
+        #         <div id="chat-messages" style="height: 320px; overflow-y: auto; padding: 10px;"></div>
+        #         <div style="padding: 10px; border-top: 1px solid #ccc;">
+        #             <input type="text" id="chat-input" style="width: 80%; padding: 5px;" placeholder="Type your message...">
+        #             <button onclick="sendMessage()" style="width: 18%; padding: 5px;">Send</button>
+        #         </div>
+        #     </div>
+        # </div>
+        #
+        # <script>
+        #     document.getElementById('chatbot-header').addEventListener('click', function() {
+        #         const body = document.getElementById('chatbot-body');
+        #         body.style.display = body.style.display === 'none' ? 'block' : 'none';
+        #     });
+        #
+        #     function sendMessage() {
+        #         const input = document.getElementById('chat-input');
+        #         const message = input.value.trim();
+        #         if (!message) return;
+        #
+        #         // Add user message to chat
+        #         addMessage('You: ' + message, 'user');
+        #         input.value = '';
+        #
+        #         // Send to backend
+        #         fetch('/chat', {
+        #             method: 'POST',
+        #             headers: {
+        #                 'Content-Type': 'application/json',
+        #             },
+        #             body: JSON.stringify({ message: message })
+        #         })
+        #         .then(response => response.json())
+        #         .then(data => {
+        #             addMessage('Noor: ' + data.response, 'bot');
+        #         })
+        #         .catch(error => {
+        #             addMessage('Error: Could not get response', 'error');
+        #         });
+        #     }
+        #
+        #     function addMessage(message, type) {
+        #         const messagesDiv = document.getElementById('chat-messages');
+        #         const messageElement = document.createElement('div');
+        #         messageElement.style.marginBottom = '10px';
+        #         messageElement.style.padding = '5px';
+        #         messageElement.style.borderRadius = '5px';
+        #         
+        #         if (type === 'user') {
+        #             messageElement.style.backgroundColor = '#e3f2fd';
+        #             messageElement.style.marginLeft = '20%';
+        #         } else if (type === 'bot') {
+        #             messageElement.style.backgroundColor = '#f5f5f5';
+        #             messageElement.style.marginRight = '20%';
+        #         } else {
+        #             messageElement.style.backgroundColor = '#ffebee';
+        #         }
+        #         
+        #         messageElement.textContent = message;
+        #         messagesDiv.appendChild(messageElement);
+        #         messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        #     }
+        #
+        #     // Add enter key support
+        #     document.getElementById('chat-input').addEventListener('keypress', function(e) {
+        #         if (e.key === 'Enter') {
+        #             sendMessage();
+        #         }
+        #     });
+        # </script>
+        # """
+        # 
+        # # Insert chatbot HTML before the closing body tag
+        # html_content = html_content.replace('</body>', chatbot_html + '</body>')
         
         return html_content
     except Exception as e:
