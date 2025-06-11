@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thank You for Your Feedback!</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #fce4ec 0%, #e0f2f7 100%); /* Soft pink to light blue gradient */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            color: #475569;
+            text-align: center;
+        }
+        .container {
+            background-color: #fff;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(255, 182, 213, 0.2);
+            padding: 40px;
+            max-width: 600px;
+            width: 90%;
+            animation: fadeInScale 0.6s ease-out;
+        }
+        h1 {
+            color: #b23a48; /* Darker pink */
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            font-weight: 700;
+        }
+        p {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            margin-bottom: 30px;
+        }
+        .feedback-button {
+            background: linear-gradient(90deg, #b23a48 0%, #ff6b8f 100%); /* Pink gradient */
+            color: #fff;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 50px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            display: inline-block;
+            box-shadow: 0 5px 15px rgba(255, 182, 213, 0.4);
+        }
+        .feedback-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(255, 182, 213, 0.6);
+        }
+
+        @keyframes fadeInScale {
+            from {
+                opacity: 0;
+                transform: scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Thank You!</h1>
+        <p>Your skincare product recommendations report has been successfully downloaded.</p>
+        <p>We appreciate your valuable time using Noor.ai. Your feedback helps us improve!</p>
+        <a href="https://forms.gle/DQdsxuwDievwZfiF7" target="_blank" class="feedback-button">
+            Share Your Feedback
+        </a>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Redirect to landing page on refresh/direct access
+            if (performance.navigation.type === 1 || performance.navigation.type === 0) {
+                window.location.replace('/'); // Redirect to landing page
+                return;
+            }
+        });
+    </script>
+</body>
+</html> 

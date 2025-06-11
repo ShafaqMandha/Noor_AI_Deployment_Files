@@ -16,7 +16,7 @@ skin_cols = ['Dry', 'Normal', 'Oily']
 
 # Initialize OpenAI client with direct API key
 try:
-    OPENAI_API_KEY = "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"  # Replace with your actual API key
+    OPENAI_API_KEY = "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"
     client = OpenAI(api_key=OPENAI_API_KEY)
     print("OpenAI client initialized successfully!")
 except Exception as e:
@@ -74,22 +74,25 @@ def recommend_products(skin_type, budget=None, top_n_per_type=2):
 @app.route('/model.json')
 def serve_model():
     try:
-        return send_file('model.json')
+        return send_file(os.path.abspath('model.json'))
     except Exception as e:
+        print(f"Error serving model.json: {str(e)}")
         return f"Error serving model.json: {str(e)}", 500
 
 @app.route('/metadata.json')
 def serve_metadata():
     try:
-        return send_file('metadata.json')
+        return send_file(os.path.abspath('metadata.json'))
     except Exception as e:
+        print(f"Error serving metadata.json: {str(e)}")
         return f"Error serving metadata.json: {str(e)}", 500
 
 @app.route('/weights.bin')
 def serve_weights():
     try:
-        return send_file('weights.bin')
+        return send_file(os.path.abspath('weights.bin'))
     except Exception as e:
+        print(f"Error serving weights.bin: {str(e)}")
         return f"Error serving weights.bin: {str(e)}", 500
 
 # API endpoint for recommendations
@@ -97,6 +100,7 @@ def serve_weights():
 def get_recommendations():
     data = request.get_json()
     skin_type = data.get('skin_type', '').strip()
+    budget = data.get('budget')
     
     # Normalize skin type
     skin_type_map = {
@@ -113,7 +117,6 @@ def get_recommendations():
         return {'error': f'Invalid skin type: {skin_type}. Must be one of: {", ".join(skin_cols)}'}, 400
         
     try:
-        budget = data.get('budget')
         recommendations = recommend_products(skin_type, budget)
         
         # Convert recommendations to dict and add a description
@@ -125,13 +128,15 @@ def get_recommendations():
     except Exception as e:
         return {'error': str(e)}, 500
 
-def get_skincare_context(df):
+def get_skincare_context(df, recommended_products=None):
     """Create a context string from the skincare data"""
     if df is None or df.empty:
+        print("DEBUG: Dataset is empty or None in get_skincare_context.")
         return "No data available."
         
     try:
-        context = """You are a skincare assistant that MUST ONLY provide recommendations and information based on the following dataset. 
+        context = """You are Noor, a skincare assistant that provides personalized skincare recommendations.
+        You MUST ONLY provide recommendations and information based on the following dataset.
         DO NOT make recommendations about products that are not in this dataset.
         DO NOT provide general skincare advice without referencing specific products from the dataset.
         
@@ -143,38 +148,44 @@ def get_skincare_context(df):
         context += f"Product categories: {', '.join(df['Label'].dropna().unique())}\n"
         context += f"Brands available: {', '.join(df['brand'].dropna().unique())}\n\n"
         
-        # Add detailed product information (limit to first 10 products to avoid context length issues)
-        context += "Available Products (showing first 10):\n"
-        for _, row in df.head(10).iterrows():
-            try:
-                context += f"Product: {row['brand']} {row['name']}\n"
-                context += f"Category: {row['Label']}\n"
-                context += f"Price: ${row['price']}\n"
-                context += f"Rating: {row['rank']}\n"
-                context += f"Ingredients: {row['ingredients']}\n"
-                context += "Suitable for skin types: "
-                skin_types = []
-                if row.get('Combination'): skin_types.append('Combination')
-                if row.get('Dry'): skin_types.append('Dry')
-                if row.get('Normal'): skin_types.append('Normal')
-                if row.get('Oily'): skin_types.append('Oily')
-                if row.get('Sensitive'): skin_types.append('Sensitive')
-                context += ', '.join(skin_types) + "\n"
-                context += f"Availability: {row.get('availability', 'Unknown')}\n\n"
-            except Exception as e:
-                continue
+        # Add recommended products if provided
+        if recommended_products:
+            print(f"DEBUG: Recommended products received: {recommended_products}")
+            context += "Currently Recommended Products:\n"
+            for product in recommended_products:
+                context += f"Product: {product['brand']} {product['name']}\n"
+                context += f"Category: {product['Label']}\n"
+                context += f"Price: ${product['price']}\n"
+                context += f"Rating: {product['rank']}\n"
+                context += f"Description: {product.get('description', '')}\n\n"
+        else:
+            print("DEBUG: No recommended products provided to get_skincare_context.")
         
+        print(f"DEBUG: Generated context length: {len(context)}")
         return context
     except Exception as e:
         print(f"Error generating context: {str(e)}")
         return "Error generating context."
 
-def get_chatbot_response(user_input, context, df):
-    """Get response from OpenAI API"""
-    if df is None or df.empty:
-        return "I apologize, but I'm currently unable to access the product database. Please try again later."
-        
+@app.route('/chat', methods=['POST'])
+def chat():
     try:
+        data = request.get_json()
+        user_message = data.get('message', '').strip()
+        recommended_products = data.get('recommended_products', [])
+        
+        print(f"DEBUG: Received chat message: '{user_message}'")
+        print(f"DEBUG: Received recommended products in chat endpoint: {recommended_products}")
+        
+        if not user_message:
+            print("DEBUG: No message provided.")
+            return jsonify({'error': 'No message provided'}), 400
+            
+        # Get context with recommended products
+        context = get_skincare_context(df, recommended_products)
+        print(f"DEBUG: Context for OpenAI: {context[:200]}...") # Print first 200 chars of context
+        
+        # Prepare messages for OpenAI
         messages = [
             {"role": "system", "content": f"""You are Noor, a skincare assistant that provides personalized skincare recommendations.
             
@@ -216,9 +227,12 @@ STRICT GUIDELINES:
 7. Always verify product availability before recommending
 
 Remember: You can ONLY make recommendations based on the products we offer."""},
-            {"role": "user", "content": user_input}
+            {"role": "user", "content": user_message}
         ]
         
+        print(f"DEBUG: Messages sent to OpenAI: {messages}")
+        
+        # Get response from OpenAI
         response = client.chat.completions.create(
             model="gpt-3.5-turbo",
             messages=messages,
@@ -226,124 +240,39 @@ Remember: You can ONLY make recommendations based on the products we offer."""},
             max_tokens=800
         )
         
-        return response.choices[0].message.content
+        # Extract and return the response
+        bot_response = response.choices[0].message.content
+        print(f"DEBUG: OpenAI raw response: {response}")
+        print(f"DEBUG: Extracted bot response: '{bot_response}'")
+        return jsonify({'response': bot_response})
+        
     except Exception as e:
-        return f"I apologize, but I encountered an error: {str(e)}"
+        print(f"Error in chat endpoint: {str(e)}")
+        return jsonify({'error': 'An error occurred while processing your request. Please try again.'}), 500
 
-@app.route('/chat', methods=['POST'])
-def chat():
-    try:
-        data = request.json
-        user_message = data.get('message', '')
-        
-        # Generate context from the dataset
-        context = get_skincare_context(df)
-        
-        # Get response from OpenAI
-        response = get_chatbot_response(user_message, context, df)
-        
-        return jsonify({"response": response})
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
-
-# Main route
 @app.route('/')
-def index():
+def landing():
     try:
-        # Get dataset statistics
-        stats = get_dataset_stats(df)
-        
-        # Read the HTML template
-        with open('AI Beauty Advisor.html', 'r', encoding='utf-8') as file:
-            html_content = file.read()
-            
-        # Add chatbot widget HTML and JavaScript
-        # chatbot_html = """
-        # <div id="chatbot-widget" style="position: fixed; bottom: 20px; right: 20px; z-index: 1000;">
-        #     <div id="chatbot-header" style="background: #4a90e2; color: white; padding: 10px; cursor: pointer; border-radius: 5px 5px 0 0;">
-        #         Chat with Noor
-        #     </div>
-        #     <div id="chatbot-body" style="display: none; background: white; border: 1px solid #ccc; height: 400px; width: 300px; border-radius: 0 0 5px 5px;">
-        #         <div id="chat-messages" style="height: 320px; overflow-y: auto; padding: 10px;"></div>
-        #         <div style="padding: 10px; border-top: 1px solid #ccc;">
-        #             <input type="text" id="chat-input" style="width: 80%; padding: 5px;" placeholder="Type your message...">
-        #             <button onclick="sendMessage()" style="width: 18%; padding: 5px;">Send</button>
-        #         </div>
-        #     </div>
-        # </div>
-        #
-        # <script>
-        #     document.getElementById('chatbot-header').addEventListener('click', function() {
-        #         const body = document.getElementById('chatbot-body');
-        #         body.style.display = body.style.display === 'none' ? 'block' : 'none';
-        #     });
-        #
-        #     function sendMessage() {
-        #         const input = document.getElementById('chat-input');
-        #         const message = input.value.trim();
-        #         if (!message) return;
-        #
-        #         // Add user message to chat
-        #         addMessage('You: ' + message, 'user');
-        #         input.value = '';
-        #
-        #         // Send to backend
-        #         fetch('/chat', {
-        #             method: 'POST',
-        #             headers: {
-        #                 'Content-Type': 'application/json',
-        #             },
-        #             body: JSON.stringify({ message: message })
-        #         })
-        #         .then(response => response.json())
-        #         .then(data => {
-        #             addMessage('Noor: ' + data.response, 'bot');
-        #         })
-        #         .catch(error => {
-        #             addMessage('Error: Could not get response', 'error');
-        #         });
-        #     }
-        #
-        #     function addMessage(message, type) {
-        #         const messagesDiv = document.getElementById('chat-messages');
-        #         const messageElement = document.createElement('div');
-        #         messageElement.style.marginBottom = '10px';
-        #         messageElement.style.padding = '5px';
-        #         messageElement.style.borderRadius = '5px';
-        #         
-        #         if (type === 'user') {
-        #             messageElement.style.backgroundColor = '#e3f2fd';
-        #             messageElement.style.marginLeft = '20%';
-        #         } else if (type === 'bot') {
-        #             messageElement.style.backgroundColor = '#f5f5f5';
-        #             messageElement.style.marginRight = '20%';
-        #         } else {
-        #             messageElement.style.backgroundColor = '#ffebee';
-        #         }
-        #         
-        #         messageElement.textContent = message;
-        #         messagesDiv.appendChild(messageElement);
-        #         messagesDiv.scrollTop = messagesDiv.scrollHeight;
-        #     }
-        #
-        #     // Add enter key support
-        #     document.getElementById('chat-input').addEventListener('keypress', function(e) {
-        #         if (e.key === 'Enter') {
-        #             sendMessage();
-        #         }
-        #     });
-        # </script>
-        # """
-        # 
-        # # Insert chatbot HTML before the closing body tag
-        # html_content = html_content.replace('</body>', chatbot_html + '</body>')
-        
-        return html_content
+        with open('landing_page.html', 'r', encoding='utf-8') as file:
+            return file.read()
     except Exception as e:
-        print(f"Error serving main page: {str(e)}")
-        return jsonify({"error": "Main page not found"}), 404
+        return f"Error loading landing page: {str(e)}", 500
+
+@app.route('/main')
+def main():
+    try:
+        with open('AI Beauty Advisor.html', 'r', encoding='utf-8') as file:
+            return file.read()
+    except Exception as e:
+        return f"Error loading main page: {str(e)}", 500
+
+@app.route('/thank_you')
+def thank_you():
+    try:
+        with open('thank_you.html', 'r', encoding='utf-8') as file:
+            return file.read()
+    except Exception as e:
+        return f"Error loading thank you page: {str(e)}", 500
 
 if __name__ == '__main__':
-    print("\nStarting Flask server...")
-    app.run(debug=True, port=5000, load_dotenv=False)
-    print("Server will be available at http://localhost:5000")
+    app.run(debug=True, port=5000)

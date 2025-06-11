@@ -54,13 +54,9 @@ def get_dataset_stats(df):
         return {}
 
 # Recommendation logic
-def recommend_products(skin_type, budget=None, top_n_per_type=2):
+def recommend_products(skin_type, top_n_per_type=2):
     # Products that are suitable for the specific skin type
     skin_type_products = df[df[skin_type] == 1]
-    
-    # Apply budget filter if specified
-    if budget:
-        skin_type_products = skin_type_products[skin_type_products["price"] <= budget]
     
     # Sort by category and rank
     filtered_sorted = skin_type_products.sort_values(by=["Label", "rank"], ascending=[True, False])
@@ -74,22 +70,25 @@ def recommend_products(skin_type, budget=None, top_n_per_type=2):
 @app.route('/model.json')
 def serve_model():
     try:
-        return send_file('model.json')
+        return send_file(os.path.abspath('model.json'))
     except Exception as e:
+        print(f"Error serving model.json: {str(e)}")
         return f"Error serving model.json: {str(e)}", 500
 
 @app.route('/metadata.json')
 def serve_metadata():
     try:
-        return send_file('metadata.json')
+        return send_file(os.path.abspath('metadata.json'))
     except Exception as e:
+        print(f"Error serving metadata.json: {str(e)}")
         return f"Error serving metadata.json: {str(e)}", 500
 
 @app.route('/weights.bin')
 def serve_weights():
     try:
-        return send_file('weights.bin')
+        return send_file(os.path.abspath('weights.bin'))
     except Exception as e:
+        print(f"Error serving weights.bin: {str(e)}")
         return f"Error serving weights.bin: {str(e)}", 500
 
 # API endpoint for recommendations
@@ -113,8 +112,7 @@ def get_recommendations():
         return {'error': f'Invalid skin type: {skin_type}. Must be one of: {", ".join(skin_cols)}'}, 400
         
     try:
-        budget = data.get('budget')
-        recommendations = recommend_products(skin_type, budget)
+        recommendations = recommend_products(skin_type)
         
         # Convert recommendations to dict and add a description
         recs_dict = recommendations.to_dict('records')
@@ -241,28 +239,28 @@ def index():
         print(f"Error serving main page: {str(e)}")
         return jsonify({"error": "Main page not found"}), 404
 
-@app.route('/chat', methods=['POST'])
-def chat():
-    try:
-        data = request.json
-        user_message = data.get('message', '')
-        recommended_products = data.get('recommended_products', [])
+# @app.route('/chat', methods=['POST'])
+# def chat():
+#     try:
+#         data = request.json
+#         user_message = data.get('message', '')
+#         recommended_products = data.get('recommended_products', [])
 
-        # Generate context from the dataset
-        context = get_skincare_context(df)
+#         # Generate context from the dataset
+#         context = get_skincare_context(df)
 
-        # Add recommended products to context if provided
-        if recommended_products:
-            context += '\n\nUser has received these recommended products:\n'
-            for prod in recommended_products:
-                context += f"- {prod.get('name', '')} by {prod.get('brand', '')} (${prod.get('price', '')})\n"
+#         # Add recommended products to context if provided
+#         if recommended_products:
+#             context += '\n\nUser has received these recommended products:\n'
+#             for prod in recommended_products:
+#                 context += f"- {prod.get('name', '')} by {prod.get('brand', '')} (${prod.get('price', '')})\n"
 
-        # Get response from OpenAI
-        response = get_chatbot_response(user_message, context, df)
+#         # Get response from OpenAI
+#         response = get_chatbot_response(user_message, context, df)
 
-        return jsonify({"response": response})
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
+#         return jsonify({"response": response})
+#     except Exception as e:
+#         return jsonify({"error": str(e)}), 500
 
 if __name__ == '__main__':
     print("\nStarting Flask server...")

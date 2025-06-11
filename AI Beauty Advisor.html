@@ -52,10 +52,10 @@
             background: rgba(255, 255, 255, 0.99);
             max-width: 1200px;
             width: 98vw;
-            min-height: 90vh;
+            min-height: auto;
             box-shadow: 0 8px 32px rgba(255,182,213,0.15);
             border-radius: 24px;
-            padding: 40px 24px;
+            padding: 30px 24px;
             margin: 32px 0;
             display: flex;
             flex-direction: column;
@@ -73,10 +73,10 @@
         .title {
             font-size: 2.5rem;
             font-weight: 800;
-            background: none;
-            -webkit-background-clip: unset;
-            -webkit-text-fill-color: unset;
-            background-clip: unset;
+            background: none !important;
+            -webkit-background-clip: unset !important;
+            -webkit-text-fill-color: unset !important;
+            background-clip: unset !important;
             margin-bottom: 8px;
             letter-spacing: -0.02em;
             color: #b23a48 !important;
@@ -88,44 +88,146 @@
         }
         /* Upload section styles */
         .upload-section {
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            gap: 40px; /* Space between upload area and instructions */
+            flex-wrap: wrap; /* Allow wrapping on smaller screens */
+            width: 100%;
             margin-bottom: 30px;
         }
+
         .upload-area {
-            border: 2px dashed #cbd5e1;
-            border-radius: 16px;
-            padding: 40px 20px;
+            border: 2px dashed #b79cff; /* Dashed purple border */
+            border-radius: 50%; /* Make it a circle */
+            width: 280px; /* Fixed width for the circle */
+            height: 280px; /* Fixed height for the circle */
+            padding: 20px;
             text-align: center;
             cursor: pointer;
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            background: linear-gradient(45deg, #f8fafc, #f1f5f9);
+            background: linear-gradient(135deg, #e0c8ff 0%, #b79cff 100%); /* Purple gradient background */
             position: relative;
-            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden; /* Ensure content within circle is clipped */
+            flex-shrink: 0; /* Prevent shrinking */
         }
+
         .upload-area:hover {
-            border-color: #ffd1e6;
-            background: linear-gradient(45deg, #fff6fa, #ffeaf4);
-            transform: translateY(-2px);
-            box-shadow: 0 10px 25px -5px rgba(255, 182, 213, 0.2);
+            border-color: #a084f7;
+            background: linear-gradient(135deg, #d4bbff 0%, #a084f7 100%);
+            transform: scale(1.02); /* Slightly larger hover effect */
+            box-shadow: 0 10px 25px -5px rgba(183, 156, 255, 0.4); /* Purple shadow */
         }
+
         .upload-area.dragover {
-            border-color: #ffd1e6;
-            background: linear-gradient(45deg, #ffeaf4, #ffd1e6);
+            border-color: #a084f7;
+            background: linear-gradient(135deg, #d4bbff 0%, #a084f7 100%);
             transform: scale(1.02);
         }
-        .upload-icon {
-            font-size: 3rem;
-            color: #94a3b8;
-            margin-bottom: 16px;
+
+        .upload-area p {
+            color: #ffffff; /* White text for better contrast */
+            margin: 0;
+            line-height: 1.4;
         }
-        .upload-text {
-            font-size: 1.1rem;
-            color: #475569;
-            font-weight: 600;
+
+        .upload-area .main-text {
+            font-size: 1.5rem;
+            font-weight: 700;
             margin-bottom: 8px;
         }
-        .upload-subtext {
+
+        .upload-area .sub-text {
             font-size: 0.9rem;
-            color: #94a3b8;
+            font-weight: 400;
+            opacity: 0.9;
+        }
+
+        #uploaded-image-preview {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover; /* Cover the circular area */
+            border-radius: 50%;
+            display: none; /* Hidden by default */
+        }
+        #upload-instructions {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start; /* Align text to the left */
+            justify-content: flex-start;
+            text-align: left;
+            width: auto; /* Adjust width based on content */
+            max-width: 300px; /* Max width for instructions */
+            padding-top: 20px; /* Align with the top of the circle */
+        }
+
+        .instructions-title {
+            color: #b23a48; /* Reddish color for the title */
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+
+        .instruction-item {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 15px;
+            font-size: 1rem;
+            color: #475569;
+        }
+
+        .instruction-item strong {
+            color: #b23a48; /* Bold text in reddish color */
+            margin-right: 8px;
+            white-space: nowrap; /* Prevent wrapping for bold text */
+        }
+
+        .privacy-note {
+            background-color: #e6ffe6; /* Light green background */
+            border-left: 5px solid #66bb6a; /* Green border on the left */
+            border-radius: 8px;
+            padding: 15px 20px;
+            margin-top: 30px;
+            font-size: 0.9rem;
+            color: #388e3c; /* Darker green text */
+            line-height: 1.5;
+        }
+
+        .privacy-note strong {
+            color: #2e7d32; /* Even darker green for bold text */
+        }
+        /* Buttons */
+        .upload-btn {
+            background: #ffb6d5; /* Pink button */
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            padding: 12px 30px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.2s ease;
+            box-shadow: 0 4px 10px rgba(255, 182, 213, 0.3);
+            margin-top: 30px;
+            margin-bottom: 20px;
+        }
+
+        .upload-btn:hover {
+            background: #ff9cc2;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(255, 182, 213, 0.4);
+        }
+
+        .upload-btn:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 5px rgba(255, 182, 213, 0.2);
         }
         #file-input {
             display: none;
@@ -139,16 +241,6 @@
         @keyframes fadeIn {
             from { opacity: 0; transform: scale(0.95); }
             to { opacity: 1; transform: scale(1); }
-        }
-        #preview {
-            width: 280px;
-            height: 280px;
-            object-fit: cover;
-            border-radius: 20px;
-            margin: 0 auto;
-            display: block;
-            box-shadow: 0 20px 40px -12px rgba(0, 0, 0, 0.3);
-            border: 4px solid white;
         }
         .analyze-btn, .recommend-btn, .btn, .recommendations-table td a, button {
             background: linear-gradient(135deg, #ffd1e6 0%, #ffeaf4 100%) !important;
@@ -276,7 +368,8 @@
             border-spacing: 0 8px;
             margin-top: 20px;
         }
-        .recommendations-table th {
+        .recommendations-table th,
+        .pink-table th {
             background: linear-gradient(135deg, #ffd1e6 0%, #ffeaf4 100%) !important;
             color: #b23a48 !important;
             border: none !important;
@@ -288,6 +381,7 @@
             text-align: left !important;
             position: relative !important;
             white-space: nowrap !important;
+            box-shadow: none !important;
         }
         .recommendations-table td {
             background: #fff6fa;
@@ -378,7 +472,7 @@
             .title {
                 font-size: 2rem;
             }
-            #preview {
+            #uploaded-image-preview {
                 width: 240px;
                 height: 240px;
             }
@@ -509,27 +603,106 @@
                 padding: 20px;
             }
         }
-        .pink-table th,
-        .recommendations-table th {
-            background: linear-gradient(135deg, #ffd1e6 0%, #ffeaf4 100%) !important;
-            color: #b23a48 !important;
-            border: none !important;
-            padding: 1.5rem 2rem !important;
-            font-weight: 600 !important;
-            text-transform: uppercase !important;
-            letter-spacing: 0.5px !important;
-            font-size: 1rem !important;
-            text-align: left !important;
-            position: relative !important;
-            white-space: nowrap !important;
-            box-shadow: none !important;
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px;
+            margin-top: 20px;
         }
-        .title {
-            color: #b23a48 !important;
-            background: none !important;
-            -webkit-background-clip: unset !important;
-            -webkit-text-fill-color: unset !important;
-            background-clip: unset !important;
+
+        .product-card {
+            background: #ffffff;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 12px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+        }
+
+        .product-category-badge {
+            background: var(--accent-pink);
+            color: #ffffff;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .product-title {
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: #1e293b;
+            line-height: 1.2;
+        }
+
+        .product-brand {
+            font-size: 1rem;
+            color: #64748b;
+            font-weight: 500;
+        }
+
+        .product-rating-container {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #475569;
+            font-size: 0.95rem;
+        }
+
+        .product-star {
+            color: #fbbf24;
+            font-size: 1.1rem;
+        }
+
+        .product-price-display {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-top: auto; /* Pushes price to the bottom */
+        }
+
+        .product-shop-button {
+            background: var(--accent-pink);
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            padding: 12px 20px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.2s ease;
+            box-shadow: 0 4px 10px rgba(255, 182, 213, 0.3);
+            width: 100%;
+            text-align: center;
+            text-decoration: none;
+            display: block;
+        }
+
+        .product-shop-button:hover {
+            background: var(--text-primary);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(255, 182, 213, 0.4);
+        }
+
+        .product-shop-button:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 5px rgba(255, 182, 213, 0.2);
+        }
+
+        @media (max-width: 768px) {
+            .product-grid {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
@@ -541,25 +714,63 @@
             <div class="subtitle">Your Personalized AI Beauty & Skincare Advisor</div>
         </div>
         <!-- Upload Section -->
-        <div class="upload-section">
-            <div class="upload-area" onclick="document.getElementById('file-input').click()">
-                <div class="upload-icon">📸</div>
-                <div class="upload-text">Upload Your Photo</div>
-                <div class="upload-subtext">Click to select • JPG, PNG up to 10MB</div>
+        <div id="analysis-instructions">
+            <h2 style="font-size: 2rem; font-weight: 700; color: #b23a48; margin-bottom: 10px;">Step 1: Skin Analysis</h2>
+            <p style="font-size: 1.1rem; color: #475569;">Upload a clear, makeup-free photo for our AI to analyze your skin type</p>
+        </div>
+        <div class="upload-section" id="upload-section">
+            <div class="upload-area" id="upload-area">
+                <input type="file" id="file-input" accept="image/jpeg, image/png, image/jpg">
+                <img id="uploaded-image-preview" src="#" alt="Image Preview">
+                <div id="upload-instructions">
+                    <p class="main-text">Upload Your Photo</p>
+                    <p class="sub-text">Click to select &bull; JPG, PNG up to 10MB</p>
+                </div>
             </div>
-            <input type="file" id="file-input" accept="image/*">
+
+            <div class="upload-right-section">
+                <h3 class="instructions-title">For best results:</h3>
+                <div class="instruction-item">
+                    <strong>Make sure you have no makeup on - </strong>
+                    <span>As a clean, makeup-free face helps with accurate analysis</span>
+                </div>
+                <div class="instruction-item">
+                    <strong>Ensure that there is good lighting - </strong>
+                    <span>Natural daylight works best</span>
+                </div>
+                <div class="instruction-item">
+                    <strong>Try facing the camera directly - </strong>
+                    <span>Look straight at the camera</span>
+                </div>
+                <div class="instruction-item">
+                    <strong>Fill the frame - </strong>
+                    <span>Your face should take up most of the photo</span>
+                </div>
+                <div class="privacy-note">
+                    <strong>Privacy:</strong> Your photos are analyzed securely and automatically deleted after processing. We never store or share your images.
+                </div>
+            </div>
         </div>
-        <!-- Preview Section -->
-        <div class="preview-container" id="preview-container">
-            <img id="preview" alt="Preview">
-        </div>
+
+        <button class="upload-btn" id="upload-photo-btn">Upload Photo</button>
         <!-- Analysis Button -->
-        <button class="analyze-btn" id="analyze-btn" onclick="predict()" disabled>
+        <button class="analyze-btn" id="analyze-btn" onclick="predict()" disabled style="margin-top: 20px;">
             <div class="btn-text">
                 <div class="loading-spinner" id="loading-spinner"></div>
                 <span id="btn-text">Analyze Skin Type</span>
             </div>
         </button>
+        <!-- Update Picture Button -->
+        <button class="analyze-btn" id="update-picture-btn" onclick="resetUploadArea()" style="display:none; margin-top: 10px;">
+            <div class="btn-text">
+                <span>Update Picture</span>
+            </div>
+        </button>
+        <!-- Step 2: Your Skin Analysis Results -->
+        <div id="analysis-results-heading" style="display: none; text-align: center; margin-bottom: 20px;">
+            <h2 style="font-size: 2rem; font-weight: 700; color: #b23a48; margin-bottom: 10px;">Step 2: Your Skin Analysis Results</h2>
+            <p style="font-size: 1.1rem; color: #475569;">Here's what our AI discovered about your skin.</p>
+        </div>
         <!-- Results Section -->
         <div class="results" id="results"></div>
         <!-- Recommendations Section (initially hidden) -->
@@ -567,32 +778,10 @@
             <h2 class="section-title">
                 <span class="icon">🎁</span> Recommended Products for Your Skin Type
             </h2>
-            <div class="budget-input">
-                <label for="budget">
-                    <span class="icon">💰</span> Set Your Budget (Optional)
-                </label>
-                <input type="number" id="budget" placeholder="Enter your budget (e.g., 50.00)" step="0.01">
-                <button class="analyze-btn mt-3" onclick="getRecommendations()">
-                    <div class="btn-text">
-                        <span>Update Recommendations</span>
-                    </div>
-                </button>
-            </div>
-            <div class="table-container">
-                <table class="recommendations-table pink-table">
-                    <thead>
-                        <tr>
-                            <th>Product</th>
-                            <th>Category</th>
-                            <th>Description</th>
-                            <th>Price</th>
-                            <th>Rating</th>
-                            <th>Available at</th>
-                        </tr>
-                    </thead>
-                    <tbody id="recommendationsTableBody">
-                    </tbody>
-                </table>
+            <button id="download-csv-btn" class="download-btn" style="margin-top: 15px; margin-bottom: 25px; background: #b23a48; color: #fff; border: none; padding: 12px 25px; border-radius: 8px; font-size: 1rem; cursor: pointer; transition: background 0.2s ease;">
+                Download My Recommended Skincare Products
+            </button>
+            <div class="product-grid" id="recommendationsGrid">
             </div>
         </div>
     </div>
@@ -606,15 +795,41 @@
         let currentSkinType = null;
 
         // Get DOM elements
-        const fileInput = document.getElementById('file-input');
-        const previewContainer = document.getElementById('preview-container');
-        const preview = document.getElementById('preview');
-        const analyzeBtn = document.getElementById('analyze-btn');
+            const fileInput = document.getElementById('file-input');
+            const uploadSection = document.getElementById('upload-section');
+            const uploadArea = document.getElementById('upload-area');
+            const uploadedImagePreview = document.getElementById('uploaded-image-preview');
+            const uploadInstructions = document.getElementById('upload-instructions');
+            const analyzeBtn = document.getElementById('analyze-btn');
+            const updatePictureBtn = document.getElementById('update-picture-btn');
         const loadingSpinner = document.getElementById('loading-spinner');
         const btnText = document.getElementById('btn-text');
         const results = document.getElementById('results');
         const recommendationsSection = document.getElementById('recommendations');
         const recommendationsTableBody = document.getElementById('recommendationsTableBody');
+        const recommendationsGrid = document.getElementById('recommendationsGrid');
+        const uploadPhotoButton = document.getElementById('upload-photo-btn');
+        const priceRangeInput = document.getElementById('price-range');
+        const priceRangeValue = document.getElementById('price-range-value');
+        const productTypeSelect = document.getElementById('product-type');
+
+        // Update price range value display
+        if (priceRangeInput && priceRangeValue) {
+            priceRangeInput.addEventListener('input', () => {
+                priceRangeValue.textContent = `$0 - $${priceRangeInput.value}`;
+            });
+        }
+
+        // Trigger recommendations update on filter change
+        if (priceRangeInput) {
+            priceRangeInput.addEventListener('change', getRecommendations);
+        }
+        if (productTypeSelect) {
+            productTypeSelect.addEventListener('change', getRecommendations);
+        }
+
+        // Make the entire upload area clickable
+        uploadArea.addEventListener('click', () => fileInput.click());
 
         // File input handler
         fileInput.addEventListener('change', function(e) {
@@ -623,6 +838,13 @@
                 handleFile(file);
             }
         });
+
+        // New 'Upload Photo' button functionality
+        if (uploadPhotoButton) {
+            uploadPhotoButton.addEventListener('click', () => {
+                fileInput.click(); // Trigger the file input when the button is clicked
+            });
+        }
 
         function handleFile(file) {
             if (!file.type.startsWith('image/')) {
@@ -637,9 +859,14 @@
 
             const reader = new FileReader();
             reader.onload = function(e) {
-                preview.src = e.target.result;
-                previewContainer.style.display = 'block';
+                uploadedImagePreview.src = e.target.result;
+                uploadedImagePreview.style.display = 'block';
+                uploadInstructions.style.display = 'none';
+
+                analyzeBtn.style.display = 'block';
                 analyzeBtn.disabled = false;
+                updatePictureBtn.style.display = 'block';
+                uploadPhotoButton.style.display = 'none';
                 
                 image = new Image();
                 image.src = e.target.result;
@@ -656,7 +883,7 @@
                     console.log('Model already loaded');
                     return;
                 }
-                
+
                 console.log('Loading AI model...');
                 if (typeof tmImage === 'undefined') {
                     throw new Error('Teachable Machine library not loaded');
@@ -679,8 +906,15 @@
                 return;
             }
 
+            // Hide upload section, analyze button, and update picture button
+            uploadSection.style.display = 'none';
+            analyzeBtn.style.display = 'none';
+            updatePictureBtn.style.display = 'none';
+            document.getElementById('analysis-instructions').style.display = 'none'; // Hide analysis instructions
+            document.getElementById('analysis-results-heading').style.display = 'none'; // Ensure Step 2 is hidden initially or on re-prediction
+
             // Reset UI state
-            analyzeBtn.disabled = true;
+            analyzeBtn.disabled = true; 
             loadingSpinner.style.display = 'block';
             btnText.textContent = 'Analyzing...';
             results.innerHTML = '';
@@ -711,12 +945,12 @@
                 const confidence = (topPrediction.probability * 100).toFixed(1);
 
                 showResult(topPrediction.className.trim(), confidence);
+                document.getElementById('analysis-results-heading').style.display = 'block'; // Show Step 2 when results are ready
 
             } catch (error) {
                 console.error('Prediction error:', error);
                 showError(error.message);
             } finally {
-                analyzeBtn.disabled = false;
                 loadingSpinner.style.display = 'none';
                 btnText.textContent = 'Analyze Skin Type';
             }
@@ -769,129 +1003,208 @@
                 return;
             }
 
-            const budget = document.getElementById('budget').value;
+            const priceRange = priceRangeInput ? priceRangeInput.value : null;
+            const productType = productTypeSelect ? productTypeSelect.value : 'All Types';
             
             // Show loading state
-            recommendationsTableBody.innerHTML = `
-                <tr>
-                    <td colspan="6" class="text-center py-4">
+            recommendationsGrid.innerHTML = `
+                <div class="text-center py-4">
                         <div class="loading-spinner" style="display: inline-block;"></div>
                         <div class="mt-2">Finding your perfect products...</div>
-                    </td>
-                </tr>
+                </div>
             `;
 
             recommendationsSection.style.display = 'block';
             recommendationsSection.scrollIntoView({ behavior: 'smooth' });
 
+            // Hide Step 2 heading when recommendations are shown
+            document.getElementById('analysis-results-heading').style.display = 'none';
+
             try {
                 const response = await fetch('/api/recommendations', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
                     body: JSON.stringify({
                         skin_type: currentSkinType,
-                        budget: budget ? parseFloat(budget) : null
+                        max_price: priceRange ? parseFloat(priceRange) : null,
+                        product_type: productType !== 'All Types' ? productType : null
                     })
-                });
+                    });
 
-                const data = await response.json();
+                    const data = await response.json();
 
                 if (data.error) {
                     throw new Error(data.error);
                 }
 
                 if (!data.recommendations || data.recommendations.length === 0) {
-                    recommendationsTableBody.innerHTML = `
-                        <tr>
-                            <td colspan="6" class="text-center py-4">
+                    recommendationsGrid.innerHTML = `
+                        <div class="text-center py-4">
                                 <div class="result-icon">🔍</div>
                                 <div class="result-title mt-2">No products found</div>
                                 <div class="result-confidence">Try adjusting your budget or preferences</div>
-                            </td>
-                        </tr>
+                        </div>
                     `;
                     return;
                 }
 
                 // Display recommendations
-                recommendationsTableBody.innerHTML = '';
-                data.recommendations.forEach(product => {
-                    const row = document.createElement('tr');
+                recommendationsGrid.innerHTML = '';
+                        data.recommendations.forEach(product => {
                     const productLink = product['Available at'] || '#';
-                    row.innerHTML = `
-                        <td>${product.brand} - ${product.name}</td>
-                        <td>${product.Label}</td>
-                        <td>${product.description || `${product.Label} for ${currentSkinType} skin`}</td>
-                        <td>$${product.price.toFixed(2)}</td>
-                        <td>${'⭐'.repeat(Math.floor(product.rank))} ${product.rank.toFixed(1)}</td>
-                        <td><a href="${productLink}" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-outline-primary">View Product</a></td>
+                    const productCard = document.createElement('div');
+                    productCard.className = 'product-card';
+                    productCard.innerHTML = `
+                        <div class="product-category-badge">${product.Label}</div>
+                        <div class="product-title">${product.name}</div>
+                        <div class="product-brand">${product.brand}</div>
+                        <div class="product-rating-container">
+                            <span class="product-star">⭐</span> ${product.rank.toFixed(1)} (${product.num_reviews || 0})
+                        </div>
+                        <div class="product-price-display">$${product.price.toFixed(2)}</div>
+                        <a href="${productLink}" target="_blank" rel="noopener noreferrer" class="product-shop-button">
+                            Shop for the product here
+                        </a>
                     `;
-                    recommendationsTableBody.appendChild(row);
+                    recommendationsGrid.appendChild(productCard);
                 });
+
+                // Display the recommendations section
+                recommendationsSection.style.display = 'block';
 
                 showNoorChatbotWidget(data.recommendations);
 
+                // Disable the results card and the Get Product Recommendations button after successful display
+                results.style.display = 'none';
+                const recommendButton = document.querySelector('.recommend-btn');
+                if (recommendButton) {
+                    recommendButton.disabled = true;
+                }
+
             } catch (error) {
                 console.error('Error getting recommendations:', error);
-                recommendationsTableBody.innerHTML = `
-                    <tr>
-                        <td colspan="6" class="text-center py-4">
+                recommendationsGrid.innerHTML = `
+                    <div class="text-center py-4">
                             <div class="result-icon">⚠️</div>
                             <div class="result-title mt-2">Error Loading Recommendations</div>
                             <div class="result-confidence">${error.message}</div>
-                        </td>
-                    </tr>
+                    </div>
                 `;
+                // Re-enable results display and button on error
+                results.style.display = 'block';
+                const recommendButton = document.querySelector('.recommend-btn');
+                if (recommendButton) {
+                    recommendButton.disabled = false;
+                }
             }
+            finally {
+                loadingSpinner.style.display = 'none';
+            }
+        }
+
+        // New function to reset the upload area
+        function resetUploadArea() {
+            uploadedImagePreview.style.display = 'none';
+            uploadInstructions.style.display = 'flex';
+            analyzeBtn.style.display = 'none';
+            updatePictureBtn.style.display = 'none';
+            uploadPhotoButton.style.display = 'block';
+            fileInput.value = '';
+            results.innerHTML = '';
+            results.style.display = 'block'; // Re-enable results display
+            const recommendButton = document.querySelector('.recommend-btn');
+            if (recommendButton) {
+                recommendButton.disabled = false;
+            }
+            image = null;
+            recommendationsSection.style.display = 'none';
+            uploadSection.style.display = 'block';
+            analyzeBtn.disabled = true;
+            document.getElementById('analysis-instructions').style.display = 'block'; // Show instructions on reset
+            document.getElementById('analysis-results-heading').style.display = 'none'; // Hide Step 2 on reset
         }
 
         // Noor chatbot widget function (lighter pink/white)
         function showNoorChatbotWidget(recommendedProducts) {
+            document.getElementById('analysis-instructions').style.display = 'none'; // Hide instructions when chatbot appears
             if (document.getElementById('noor-chatbot-widget')) return; // Prevent duplicates
             const chatbotHTML = `
             <div id="noor-chatbot-widget" style="position: fixed; bottom: 24px; right: 24px; z-index: 1000; font-family: 'Inter', sans-serif;">
-                <div id="noor-chatbot-header" style="background: linear-gradient(135deg, #ffd1e6 0%, #ffeaf4 100%); color: #b23a48; padding: 12px 20px; border-radius: 16px 16px 0 0; font-weight: 700; cursor: pointer; font-size: 1.1rem;">
-                    Noor
+                <div id="noor-chatbot-header" style="background: linear-gradient(135deg, #ffd1e6 0%, #ffeaf4 100%); color: #b23a48; padding: 12px 20px; border-radius: 16px 16px 0 0; font-weight: 700; cursor: pointer; font-size: 1.1rem; display: flex; justify-content: space-between; align-items: center;">
+                    <span>Chat with Noor</span>
                 </div>
-                <div id="noor-chatbot-body" style="display: none; background: #fff; border: 2px solid #ffd1e6; height: 400px; width: 320px; border-radius: 0 0 16px 16px; box-shadow: 0 8px 32px rgba(255,182,213,0.15);">
-                    <div id="noor-chat-messages" style="height: 320px; overflow-y: auto; padding: 16px;"></div>
+                <div id="noor-chatbot-body" style="display: none; background: #fff; border: 2px solid #ffd1e6; height: 500px; width: 380px; border-radius: 0 0 16px 16px; box-shadow: 0 8px 32px rgba(255,182,213,0.15);">
+                    <div id="noor-chat-messages" style="height: 420px; overflow-y: auto; padding: 16px;"></div>
                     <div style="padding: 12px; border-top: 1px solid #ffd1e6; display: flex; gap: 8px;">
-                        <input type="text" id="noor-chat-input" style="width: 80%; padding: 8px; border-radius: 8px; border: 1px solid #ffd1e6;" placeholder="Type your message...">
-                        <button onclick="sendNoorMessage()" style="width: 18%; background: #ffd1e6; color: #b23a48; border: none; border-radius: 8px;">Send</button>
+                        <input type="text" id="noor-chat-input" style="flex-grow: 1; padding: 10px; border-radius: 8px; border: 1px solid #ffd1e6; font-size: 1rem;" placeholder="Type your message...">
+                        <button id="noor-send-button" onclick="sendNoorMessage()" style="background: #ffd1e6; color: #b23a48; border: none; border-radius: 8px; padding: 10px 15px; font-weight: 600; cursor: pointer; transition: all 0.2s ease; display: flex; align-items: center; justify-content: center;">
+                            Send
+                        </button>
                     </div>
                 </div>
             </div>
             `;
             document.body.insertAdjacentHTML('beforeend', chatbotHTML);
-            document.getElementById('noor-chatbot-header').addEventListener('click', function() {
-                const body = document.getElementById('noor-chatbot-body');
-                body.style.display = body.style.display === 'none' ? 'block' : 'none';
+            
+            const chatHeader = document.getElementById('noor-chatbot-header');
+            const chatBody = document.getElementById('noor-chatbot-body');
+            const chatInput = document.getElementById('noor-chat-input');
+            const sendButton = document.getElementById('noor-send-button');
+            const chatStatus = document.getElementById('noor-chat-status');
+            
+            chatHeader.addEventListener('click', function() {
+                chatBody.style.display = chatBody.style.display === 'none' ? 'block' : 'none';
             });
+            
             window.recommendedProductsForNoor = recommendedProducts;
-            window.sendNoorMessage = function() {
-                const input = document.getElementById('noor-chat-input');
-                const message = input.value.trim();
+            
+            window.sendNoorMessage = async function() {
+                const message = chatInput.value.trim();
                 if (!message) return;
+                
+                // Disable input and button while processing
+                chatInput.disabled = true;
+                sendButton.disabled = true;
+                chatStatus.textContent = 'Typing...';
+                
+                // Add user message
                 addNoorMessage('You: ' + message, 'user');
-                input.value = '';
-                fetch('/chat', {
+                chatInput.value = '';
+                
+                try {
+                    const response = await fetch('/chat', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
                         message: message,
                         recommended_products: window.recommendedProductsForNoor
                     })
-                })
-                .then(response => response.json())
-                .then(data => {
+                    });
+                    
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    
+                    const data = await response.json();
+                    if (data.error) {
+                        throw new Error(data.error);
+                    }
+                    
                     addNoorMessage('Noor: ' + data.response, 'bot');
-                })
-                .catch(error => {
-                    addNoorMessage('Error: Could not get response', 'error');
-                });
+                } catch (error) {
+                    console.error('Chat error:', error);
+                    addNoorMessage('Sorry, I encountered an error. Please try again.', 'error');
+                } finally {
+                    // Re-enable input and button
+                    chatInput.disabled = false;
+                    sendButton.disabled = false;
+                    chatStatus.textContent = 'Online';
+                    chatInput.focus();
+                }
             };
+            
             window.addNoorMessage = function(message, type) {
                 const messagesDiv = document.getElementById('noor-chat-messages');
                 const messageElement = document.createElement('div');
@@ -900,6 +1213,8 @@
                 messageElement.style.borderRadius = '8px';
                 messageElement.style.maxWidth = '85%';
                 messageElement.style.wordBreak = 'break-word';
+                messageElement.style.animation = 'fadeIn 0.3s ease-in-out';
+                
                 if (type === 'user') {
                     messageElement.style.backgroundColor = '#ffeaf4';
                     messageElement.style.marginLeft = '15%';
@@ -908,24 +1223,110 @@
                     messageElement.style.backgroundColor = '#fff6fa';
                     messageElement.style.marginRight = '15%';
                     messageElement.style.textAlign = 'left';
-                } else {
+                    } else {
                     messageElement.style.backgroundColor = '#ffebee';
+                    messageElement.style.color = '#b23a48';
+                    messageElement.style.textAlign = 'center';
+                    messageElement.style.margin = '0 auto';
                 }
+                
                 messageElement.textContent = message;
                 messagesDiv.appendChild(messageElement);
                 messagesDiv.scrollTop = messagesDiv.scrollHeight;
             };
-            document.getElementById('noor-chat-input').addEventListener('keypress', function(e) {
-                if (e.key === 'Enter') {
+            
+            // Add keypress event listener for Enter key
+            chatInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
                     sendNoorMessage();
                 }
             });
+            
+            // Add hover effect to send button
+            sendButton.addEventListener('mouseover', function() {
+                this.style.backgroundColor = '#ffb6c1';
+            });
+            
+            sendButton.addEventListener('mouseout', function() {
+                this.style.backgroundColor = '#ffd1e6';
+            });
+            
+            // Function to download recommendations as CSV
+            window.downloadRecommendationsAsCsv = function() {
+                if (!window.recommendedProductsForNoor || window.recommendedProductsForNoor.length === 0) {
+                    alert("No recommendations to download.");
+                    return;
+                }
+
+                const recommendations = window.recommendedProductsForNoor;
+                let csvContent = "Category,Brand,Name,Price,Rating,Available At\n";
+
+                recommendations.forEach(product => {
+                    const category = product.Label || '';
+                    const brand = product.brand || '';
+                    const name = product.name || '';
+                    const price = product.price ? product.price.toFixed(2) : '';
+                    const rank = product.rank ? product.rank.toFixed(1) : '';
+                    const availability = product['Available at'] || '';
+
+                    csvContent += `${category},${brand},${name},${price},${rank},${availability}\n`;
+                });
+
+                const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+                const link = document.createElement('a');
+                if (link.download !== undefined) { // feature detection
+                    const url = URL.createObjectURL(blob);
+                    link.setAttribute('href', url);
+                    link.setAttribute('download', 'my recommended skincare products.csv');
+                    link.style.visibility = 'hidden';
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                    // Redirect to thank you page after download
+                    setTimeout(() => {
+                        window.location.href = '/thank_you';
+                    }, 100); // Small delay to ensure download initiates
+                }
+            };
+
+            // Attach click event to the download button
+            document.getElementById('download-csv-btn').addEventListener('click', window.downloadRecommendationsAsCsv);
+            
+            // Add initial welcome message
             addNoorMessage("Noor: Hi! I'm Noor, your AI beauty assistant. Ask me anything about your recommended products or skincare!", 'bot');
+            
+            // Add CSS animation
+            const style = document.createElement('style');
+            style.textContent = `
+                @keyframes fadeIn {
+                    from { opacity: 0; transform: translateY(10px); }
+                    to { opacity: 1; transform: translateY(0); }
+                }
+            `;
+            document.head.appendChild(style);
         }
 
         // Initialize
         document.addEventListener('DOMContentLoaded', function() {
             console.log('AI Beauty Advisor initialized');
+
+            // Set a flag in sessionStorage when legitimately navigating to this page
+            const fromLandingPage = sessionStorage.getItem('fromLandingPage');
+            if (fromLandingPage === 'true') {
+                // If coming from landing page, clear the flag
+                sessionStorage.removeItem('fromLandingPage');
+            } else if (performance.navigation.type === 1 || performance.navigation.type === 0) { // Type 1: reload, Type 0: navigate
+                // If refreshed or directly accessed and not marked as from landing page, redirect
+                window.location.replace('/'); // Redirect to landing page
+                return;
+            }
+            
+            // Ensure initial state
+            uploadedImagePreview.style.display = 'none';
+            uploadInstructions.style.display = 'flex'; // Make sure instructions are visible
+            analyzeBtn.style.display = 'none';
+            updatePictureBtn.style.display = 'none';
         });
     </script>
 </body>
