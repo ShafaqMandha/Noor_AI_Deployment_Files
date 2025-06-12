@@ -4,6 +4,10 @@ import pandas as pd
 import os
 from openai import OpenAI
 import json
+from dotenv import load_dotenv
+import traceback
+
+load_dotenv()
 
 # Initialize Flask app with dotenv disabled
 app = Flask(__name__, static_url_path='')
@@ -16,7 +20,9 @@ skin_cols = ['Dry', 'Normal', 'Oily']
 
 # Initialize OpenAI client with direct API key
 try:
-    OPENAI_API_KEY = "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"
+    OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
+    if not OPENAI_API_KEY:
+        raise ValueError("OPENAI_API_KEY not found in environment variables.")
     client = OpenAI(api_key=OPENAI_API_KEY)
     print("OpenAI client initialized successfully!")
 except Exception as e:
@@ -248,6 +254,7 @@ Remember: You can ONLY make recommendations based on the products we offer."""},
         
     except Exception as e:
         print(f"Error in chat endpoint: {str(e)}")
+        traceback.print_exc() # This will print the full traceback
         return jsonify({'error': 'An error occurred while processing your request. Please try again.'}), 500
 
 @app.route('/')
@@ -275,5 +282,4 @@ def thank_you():
         return f"Error loading thank you page: {str(e)}", 500
 
 if __name__ == '__main__':
-    port = int(os.environ.get("PORT", 5000))
-    app.run(debug=True, host='0.0.0.0', port=port)
+    app.run(debug=True, port=5000, host='0.0.0.0')

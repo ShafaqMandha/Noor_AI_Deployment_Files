@@ -263,6 +263,6 @@ def index():
 #         return jsonify({"error": str(e)}), 500
 
 if __name__ == '__main__':
-    port = int(os.environ.get("PORT", 5000))
-    print(f"\nStarting Flask server on port {port}...")
-    app.run(debug=True, host='0.0.0.0', port=port) 
+    print("\nStarting Flask server...")
+    app.run(debug=True, port=5000, host='0.0.0.0', load_dotenv=False)
+    print("Server will be available at http://192.168.1.43:5000") 
