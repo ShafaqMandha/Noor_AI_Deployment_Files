@@ -25,6 +25,7 @@
             max-width: 600px;
             width: 90%;
             animation: fadeInScale 0.6s ease-out;
+            padding-bottom: 120px;
         }
         h1 {
             color: #b23a48; /* Darker pink */
@@ -66,6 +67,32 @@
                 transform: scale(1);
             }
         }
+
+        /* Add footer styles */
+        .footer {
+            text-align: center;
+            padding: 20px;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.99);
+            border-top: 1px solid var(--glass-border);
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+        }
+        .footer p {
+            margin: 5px 0;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+        .footer .disclaimer {
+            font-size: 0.8rem;
+            color: #666;
+            max-width: 800px;
+            margin: 10px auto;
+            line-height: 1.4;
+        }
     </style>
 </head>
 <body>
@@ -77,10 +104,14 @@
             Share Your Feedback
         </a>
     </div>
+    <footer class="footer">
+        <p>Noor.ai - Created by Shafaq Mandha</p>
+        <p class="disclaimer">Disclaimer: This web application was built as an academic project and should not be used to replace a dermatologist in any way.</p>
+    </footer>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // Redirect to landing page on refresh/direct access
-            if (performance.navigation.type === 1 || performance.navigation.type === 0) {
+            // Redirect if user is accessing the page directly or refreshing
+            if (document.referrer === '' || performance.navigation.type === 1) {
                 window.location.replace('/'); // Redirect to landing page
                 return;
             }

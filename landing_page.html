@@ -44,6 +44,7 @@
             padding: 50px 40px;
             margin: 32px 0;
             text-align: center;
+            padding-bottom: 120px;
         }
 
         .logo-section {
@@ -184,6 +185,32 @@
                 grid-template-columns: 1fr;
             }
         }
+
+        /* Add footer styles */
+        .footer {
+            text-align: center;
+            padding: 20px;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.99);
+            border-top: 1px solid var(--glass-border);
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+        }
+        .footer p {
+            margin: 5px 0;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+        .footer .disclaimer {
+            font-size: 0.8rem;
+            color: #666;
+            max-width: 800px;
+            margin: 10px auto;
+            line-height: 1.4;
+        }
     </style>
 </head>
 <body>
@@ -223,5 +250,9 @@
             <i class="arrow-icon fas fa-arrow-right"></i>
         </button>
     </div>
+    <footer class="footer">
+        <p>Noor.ai - Created by Shafaq Mandha</p>
+        <p class="disclaimer">Disclaimer: This web application was built as an academic project and should not be used to replace a dermatologist in any way.</p>
+    </footer>
 </body>
 </html>
