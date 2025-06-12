@@ -7,7 +7,13 @@ import json
 from dotenv import load_dotenv
 import traceback
 
+# Load environment variables
 load_dotenv()
+
+# Validate API key
+api_key = os.getenv("OPENAI_API_KEY")
+if not api_key:
+    raise ValueError("OPENAI_API_KEY not found in environment variables.")
 
 # Initialize Flask app with dotenv disabled
 app = Flask(__name__, static_url_path='')
@@ -18,12 +24,9 @@ CORS(app)  # Enable CORS for all routes
 # Define skin types
 skin_cols = ['Dry', 'Normal', 'Oily']
 
-# Initialize OpenAI client with direct API key
+# Initialize OpenAI client with API key from environment
 try:
-    OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
-    if not OPENAI_API_KEY:
-        raise ValueError("OPENAI_API_KEY not found in environment variables.")
-    client = OpenAI(api_key=OPENAI_API_KEY)
+    client = OpenAI(api_key=api_key)
     print("OpenAI client initialized successfully!")
 except Exception as e:
     print(f"Error initializing OpenAI client: {str(e)}")
